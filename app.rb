@@ -42,7 +42,7 @@ post '/download/' do
 
 	puts "Calling send_file on #{final.path}"
 	
-	send_file Dir.tmpdir + "/" + file, { :disposition => 'attachment', :filename => "#{file_name}.processed.flac", :type => 'flac' }
+	send_file final.path, { :disposition => 'attachment', :filename => "#{file_name}.processed.flac", :type => 'flac' }
 	#redirect "/file/" + File.basename(final.path) + "?fn=" + Base64::urlsafe_encode64(file_name)
 
 end
