@@ -41,7 +41,9 @@ post '/download/' do
 	`avconv -i "#{params[:file][:tempfile].path}" -f wav -acodec pcm_s16le -ac 2 - | stereo_tool_cmd - - -s ./config.sts | avconv -i - -c:a flac -f flac -y #{final.path}`
 
 	puts "Calling send_file on #{final.path}"
-	redirect "/file/" + File.basename(final.path) + "?fn=" + Base64::urlsafe_encode64(file_name)
+	
+	send_file Dir.tmpdir + "/" + file, { :disposition => 'attachment', :filename => "#{file_name}.processed.flac", :type => 'flac' }
+	#redirect "/file/" + File.basename(final.path) + "?fn=" + Base64::urlsafe_encode64(file_name)
 
 end
 
