@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Audiomatic</title>
+		<meta charset="UTF-8" />
+		<style type="text/css">
+
+		</style>
+		<script type="text/javascript">
+			window.CSRF = "<%= csrf %>";
+		</script>
+	</head>
+	<body>
+		<div class="main-container">
+			<br />
+			<div class="audio-clip-container">
+				<h3>Audiomatic Sound Processor</h3>
+				<p>Select a sound file, click "Go", hang on a second, and you'll have some audio!</p>
+				<form action="/download/" target="_blank" method="post" enctype="multipart/form-data">
+					<input type="hidden" name="csrf" value="<%= csrf %>" />
+					<input type="file" name="file" id="file" />
+					<input type="submit" value="Go" />
+				</form>
+			</div>
+			<br />
+		</div>
+
+	</body>
+</html>
