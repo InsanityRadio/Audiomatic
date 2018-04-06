@@ -4,8 +4,20 @@
 	<head>
 		<title>Audiomatic</title>
 		<meta charset="UTF-8" />
+		<meta name="robots" content="noindex, nofollow" />
 		<style type="text/css">
-
+			@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+			.audio-clip-container {
+				font-family: "Open Sans", "Helvetica Neue", Arial, sans-serif;
+				font-size: 10pt;
+				margin: 0 auto;
+				width: 500px;
+				text-align: center;
+			}
+			h2 {
+				margin-top: 0;
+				font-size: 24pt;
+			}
 		</style>
 		<script type="text/javascript">
 			window.CSRF = "<%= csrf %>";
@@ -15,13 +27,22 @@
 		<div class="main-container">
 			<br />
 			<div class="audio-clip-container">
-				<h3>Audiomatic Sound Processor</h3>
-				<p>Select a sound file, click "Go", hang on a second, and you'll have some audio!</p>
+				<h2>Audiomatic</h2>
+				<h3>Online Sound Processor</h3>
+				<p>Select a sound file, hit a preset, and click "Go".</p>
+				<p>In a few seconds, you'll have some audio that hopefully sounds good!</p>
 				<form action="/download/" target="_blank" method="post" enctype="multipart/form-data">
 					<input type="hidden" name="csrf" value="<%= csrf %>" />
+					<select name="preset" id="preset">
+						<option value="default" disabled selected>Pick A Setting</option>
+					<% presets.each do | preset | %>
+						<option value="<%= preset %>"><%= preset %></option>
+					<% end %>
+					</select>
 					<input type="file" name="file" id="file" />
 					<input type="submit" value="Go" />
 				</form>
+				<p><b>WARNING:</b> This is an internal system, and is not free.</p>
 			</div>
 			<br />
 		</div>

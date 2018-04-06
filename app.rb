@@ -13,7 +13,8 @@ end
 
 get '/' do 
 	csrf = (session['csrf'] ||= SecureRandom.hex)
-	erb :index, :locals => { :csrf => csrf }
+	presets = Dir.glob('./presets/*.sts').map {|m| File.basename(m, '.sts')}
+	erb :index, :locals => { :presets => presets, :csrf => csrf }
 end
 
 def check_csrf
@@ -29,20 +30,24 @@ post '/download/' do
 	final = Tempfile.new('sts', Dir.tmpdir)
 	final.close
 	
-	raise "Invalid file" if !params[:file][:filename]
+	raise 'Invalid file' if !params[:file][:filename]
 
 	file_name = params[:file][:filename]
 	ext = File.extname(file_name)
 
 	file_name = File.basename(file_name, ext)
 
-	raise "Invalid extension" unless ["mp3", "flac", "wav", "ogg"].include?(ext[1..-1])
+	raise 'Invalid extension' unless ['mp3', 'flac', 'wav', 'ogg'].include?(ext[1..-1])
 
-	`avconv -i "#{params[:file][:tempfile].path}" -f wav -acodec pcm_s16le -ac 2 - | stereo_tool_cmd - - -s ./config.sts | avconv -i - -c:a flac -f flac -y #{final.path}`
+	preset = params[:preset]
+	preset_path = './presets/' + preset + '.sts'
+	raise 'Invalid preset' unless preset.match(/^[a-zA-Z0-9\_]+$/) and File.exist?(preset_path)
 
-	puts "Calling send_file on #{final.path}"
+	`avconv -i "#{params[:file][:tempfile].path}" -f wav -acodec pcm_s16le -ac 2 - | stereo_tool_cmd - - -s #{preset} | avconv -i - -c:a flac -f flac -y #{final.path}`
+
+	puts 'Calling send_file on #{final.path}'
 	
-	send_file final.path, { :disposition => 'attachment', :filename => "#{file_name}.processed.flac", :type => 'flac' }
+	send_file final.path, { :disposition => 'attachment', :filename => '#{file_name}.processed.flac', :type => 'flac' }
 	#redirect "/file/" + File.basename(final.path) + "?fn=" + Base64::urlsafe_encode64(file_name)
 
 end
