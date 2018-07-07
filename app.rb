@@ -57,7 +57,7 @@ get '/file/:file' do | file |
 	next if file[0..2] != "sts" or file.include? "/"
 	file_name = Base64::urlsafe_decode64(params[:fn]) rescue "untitled"
 	
-	send_file Dir.tmpdir + "/" + file, { :disposition => 'attachment', :filename => "#{file_name}.processed.flac", :type => 'flac' }
+	send_file Dir.tmpdir + "/" + file, { :disposition => 'attachment', :filename => file_name + ".processed.flac", :type => 'flac' }
 	
 end
 
