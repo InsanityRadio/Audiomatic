@@ -43,7 +43,7 @@ post '/download/' do
 	preset_path = './presets/' + preset + '.sts'
 	raise 'Invalid preset' unless preset.match(/^[a-zA-Z0-9\_]+$/) and File.exist?(preset_path)
 
-	key = ENV['ST_KEY'] ? ' -k "' + ENV['ST_KEY'] : '"'
+	key = ENV['ST_KEY'] ? ' -k "' + ENV['ST_KEY'] + '"' : ''
 
 	`avconv -i "#{params[:file][:tempfile].path}" -f wav -acodec pcm_s16le -ac 2 - | stereo_tool_cmd#{key} - - -s #{preset} | avconv -i - -c:a flac -f flac -y #{final.path}`
 
